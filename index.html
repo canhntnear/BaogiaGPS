@@ -410,7 +410,7 @@
             break-before: page;
         }
 
-        /* Attachment Toggle */
+        /* Attachment Toggle & Container */
         .toggle-attachment-btn {
             background: #eff6ff;
             color: #1e40af;
@@ -436,6 +436,13 @@
             display: block;
         }
         
+        .attachment-image-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+        }
+
         .attachment-container img {
             max-width: 100%;
             height: auto;
@@ -576,6 +583,9 @@
 
             .attachment-container {
                 display: block !important;
+            }
+            .attachment-image-wrap {
+                gap: 10px;
             }
             .attachment-container img {
                 max-width: 100% !important;
@@ -794,7 +804,7 @@ Số chứng nhận: 26.21.01/CNSP</div>
             <!-- TỔNG DỰ TOÁN ĐƠN HÀNG -->
             <div class="calc-total-card">
                 <div class="calc-label" id="grandTotalLabel">
-                    TỔNG DỰ TOÁN ĐƠN HÀNG (01 BỘ THIẾT BỊ GIÁM SÁT XE):
+                    TỔNG DỰ TOÁN ĐƠN HÀNG (01 BỘ BAN ĐẦU):
                 </div>
                 <div class="calc-number" id="grandTotalText">1.026.000 VNĐ</div>
             </div>
@@ -848,16 +858,17 @@ Số chứng nhận: 26.21.01/CNSP</div>
             
             <div>
                 <button class="toggle-attachment-btn" onclick="toggleAttachment()">
-                    <i class="fa-solid fa-eye" id="toggleIcon"></i> <span id="toggleText">Xem Tài Liệu Chứng Nhận QCVN 06</span>
+                    <i class="fa-solid fa-eye" id="toggleIcon"></i> <span id="toggleText">Xem Tài Liệu Chứng Nhận QCVN 06 (2 Trang)</span>
                 </button>
                 
                 <div class="attachment-container" id="attachmentBox">
                     <p style="font-size: 0.82rem; color: var(--slate-700); margin-bottom: 10px;">
-                        Dưới đây là văn bản chứng nhận hợp quy chi tiết của thiết bị 3T02-S:
+                        Dưới đây là các văn bản chứng nhận hợp quy chi tiết của thiết bị 3T02-S:
                     </p>
                     
-                    <div style="text-align: center;">
-                        <img src="https://raw.githubusercontent.com/canhntnear/BaogiaGPS/main/GCN02S.jpg" alt="Giấy chứng nhận 3T02-S GCN02S">
+                    <div class="attachment-image-wrap">
+                        <img src="https://raw.githubusercontent.com/canhntnear/BaogiaGPS/main/HQ02S.jpg" alt="Giấy chứng nhận hợp quy 3T02-S Trang 1 HQ02S">
+                        <img src="https://raw.githubusercontent.com/canhntnear/BaogiaGPS/main/GCN02S.jpg" alt="Giấy chứng nhận hợp quy 3T02-S Trang 2 GCN02S">
                     </div>
                 </div>
             </div>
@@ -983,7 +994,7 @@ Số chứng nhận: 26.21.01/CNSP</div>
             
             if (box.classList.contains('show')) {
                 box.classList.remove('show');
-                text.innerText = "Xem Tài Liệu Chứng Nhận QCVN 06";
+                text.innerText = "Xem Tài Liệu Chứng Nhận QCVN 06 (2 Trang)";
                 icon.className = "fa-solid fa-eye";
             } else {
                 box.classList.add('show');
