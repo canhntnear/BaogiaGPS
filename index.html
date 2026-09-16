@@ -613,7 +613,7 @@
 
             <!-- Alert NVKD -->
             <div class="admin-alert" id="adminAlert">
-                <div><strong><i class="fa-solid fa-user-pen"></i> Chế độ NVKD:</strong> Bấm vào Ngày lập, SĐT để sửa đổi.</div>
+                <div><strong><i class="fa-solid fa-user-pen"></i> Chế độ NVKD:</strong> Bấm vào Khách hàng, Ngày lập, SĐT để sửa đổi.</div>
                 <button class="btn btn-print" style="padding: 2px 8px; font-size: 0.75rem; background: #fff; color: #1e40af; border: 1px solid #bfdbfe;" onclick="lockAdmin()">Khóa lại</button>
             </div>
 
@@ -653,7 +653,7 @@
             <!-- Recipient Box -->
             <div class="recipient-box">
                 <span class="rec-label">Kính gửi:</span>
-                <span class="rec-name always-editable" id="customerName" contenteditable="true">Quý Khách hàng</span>
+                <span class="rec-name editable-field" id="customerName" contenteditable="false">Quý Khách hàng</span>
             </div>
 
             <p class="intro-text">
@@ -866,7 +866,7 @@ Số chứng nhận: 26.21.01/CNSP</div>
     <div class="modal-bg" id="passModal">
         <div class="modal-box">
             <h3><i class="fa-solid fa-shield-halved text-primary"></i> Mở khóa NVKD</h3>
-            <p>Nhập mật khẩu để chỉnh sửa ngày tháng và số liên hệ người báo giá.</p>
+            <p>Nhập mật khẩu để chỉnh sửa tên khách hàng, ngày tháng và số liên hệ.</p>
             <input type="password" id="passInput" placeholder="Nhập mật khẩu" onkeydown="if(event.key==='Enter') checkPass()">
             <div class="modal-err" id="passErr">Mật khẩu không chính xác!</div>
             <div style="display: flex; gap: 8px;">
