@@ -606,11 +606,12 @@
                 <span class="rec-name editable-field" id="customerName" contenteditable="true">Quý Khách hàng</span>
             </div>
 
+            <!-- Phần mở đầu đã được chuẩn hóa phong cách hành chính -->
             <p class="intro-text">
-                <strong>CÔNG TY TNHH 114 VẠN PHÚ KHÁNH</strong> trân trọng kính gửi Quý Công ty báo giá gói sản phẩm và dịch vụ, đáp ứng các văn bản nhà nước hiện hành, như sau:
+                <strong>CÔNG TY TNHH 114 VẠN PHÚ KHÁNH</strong> trân trọng kính gửi Quý Công ty báo giá gói sản phẩm và dịch vụ, đáp ứng các tiêu chuẩn, quy chuẩn kỹ thuật hiện hành của Nhà nước, chi tiết như sau:
             </p>
 
-            <!-- 1. THIẾT BỊ KHỞI TẠO BAN ĐẦU -->
+            <!-- 1. THIẾT BỊ KHỞI TẠO BAN ĐẦU (ĐÃ THÊM CỘT THUẾ SUẤT 8%) -->
             <div class="sec-title">
                 <i class="fa-solid fa-box-open"></i> THIẾT BỊ KHỞI TẠO BAN ĐẦU
             </div>
@@ -630,6 +631,7 @@
                             <th>Tên sản phẩm/ Dịch vụ</th>
                             <th>ĐVT</th>
                             <th>Số lượng</th>
+                            <th>Thuế suất</th>
                             <th>Đơn giá<br>(VNĐ)</th>
                             <th>Thành tiền đã bao gồm thuế GTGT (VNĐ)</th>
                         </tr>
@@ -643,6 +645,7 @@
                             </td>
                             <td class="text-center">Bộ</td>
                             <td class="text-center" style="font-weight: 700;" id="tableQty">1</td>
+                            <td class="text-center" style="font-weight: 600;">8%</td>
                             <td class="text-right price-val">
                                 <span id="hardwarePrice" class="editable-field" contenteditable="true" onblur="handleHardwarePrice(this)">950,000</span>
                             </td>
@@ -659,7 +662,7 @@
                 </div>
                 <div class="terms-list">
                     <ul>
-                        <li><strong>Đã bao gồm:</strong> Bộ thiết bị giám sát hành trình, Sim Data 4G (12 tháng), Quyền sử Dịch vụ phần mềm giám sát hành trình ( 12 tháng ) và hướng dẫn sử dụng.</li>
+                        <li><strong>Đã bao gồm:</strong> Bộ thiết bị giám sát hành trình, Sim Data 4G (12 tháng), Quyền sử dụng phần mềm giám sát hành trình (12 tháng) và tài liệu hướng dẫn vận hành.</li>
                         <li><strong>Hậu mãi Vạn Phú Khánh:</strong> Hỗ trợ kỹ thuật 24/7 và chính sách bảo hành tận xe lên đến 24 tháng.</li>
                         <li><strong>Thời gian triển khai:</strong> Trong vòng 24h - 48h kể từ khi xác nhận đặt hàng tại tỉnh Khánh Hòa và khu vực lân cận.</li>
                         <li><strong>Thanh toán:</strong> Sau khi bàn giao thiết bị giám sát xe, tài khoản quản trị và các chứng từ liên quan ( Nếu có ).</li>
@@ -667,9 +670,9 @@
                 </div>
             </div>
 
-            <!-- 3. DỊCH VỤ DUY TRÌ -->
+            <!-- 3. PHÍ DUY TRÌ DỊCH VỤ (ÁP DỤNG TỪ NĂM THỨ 02 TRỞ ĐI) -->
             <div class="sec-title">
-                <i class="fa-solid fa-arrows-rotate"></i> DỊCH VỤ DUY TRÌ
+                <i class="fa-solid fa-arrows-rotate"></i> PHÍ DUY TRÌ DỊCH VỤ (ÁP DỤNG TỪ NĂM THỨ 02 TRỞ ĐI)
             </div>
             <p style="font-size: 0.82rem; color: var(--slate-700); margin-bottom: 6px;">
                 Căn cứ theo nhu cầu sử dụng Khách hàng cần đóng phí duy trì sử dụng cho từng thiết bị chi tiết như sau:
@@ -689,7 +692,8 @@
                             <th>TT</th>
                             <th>Tên sản phẩm/ Dịch vụ</th>
                             <th>ĐVT</th>
-                            <th>Thuế Suất</th>
+                            <th>Thời hạn</th>
+                            <th>Thuế suất</th>
                             <th>Đơn giá<br>(VNĐ)</th>
                             <th>Thành tiền đã bao gồm thuế GTGT (VNĐ)</th>
                         </tr>
@@ -697,8 +701,9 @@
                     <tbody>
                         <tr>
                             <td class="text-center" style="font-weight: bold;">1</td>
-                            <td><div class="item-title">Phí dịch vụ phần mềm giám sát hành trình ( Thời hạn 12 tháng )</div></td>
+                            <td><div class="item-title">Phí dịch vụ phần mềm giám sát hành trình</div></td>
                             <td class="text-center">Gói</td>
+                            <td class="text-center">12 tháng</td>
                             <td class="text-center" style="font-weight: 600;">10%</td>
                             <td class="text-right price-val">
                                 <span id="softwarePrice">880,000</span>
@@ -716,7 +721,7 @@
                         <div class="sign-date"></div>
                         <div class="sign-heading">ĐẠI DIỆN KHÁCH HÀNG</div>
                         <div class="order-qty-input">
-                            Chúng tôi xác nhận đặt hàng: <span id="orderQty" class="order-qty-val" contenteditable="true" onblur="handleQtyChange(this)">01</span> Bộ
+                            Xác nhận đặt mua: <span id="orderQty" class="order-qty-val" contenteditable="true" onblur="handleQtyChange(this)">01</span> Bộ thiết bị
                         </div>
                         <div class="sign-space"></div>
                     </td>
@@ -771,7 +776,7 @@
                     </li>
                     <li>
                         <i class="fa-solid fa-circle-check"></i>
-                        <strong>Kết nối mở rộng:</strong> Hỗ trợ ghi nhận thêm các dữ liệu khác như nhiên liệu, nhiệt độ ....
+                        <strong>Khả năng mở rộng:</strong> Hỗ trợ tích hợp cảm biến đo mức nhiên liệu, cảm biến nhiệt độ thùng lạnh theo yêu cầu.
                     </li>
                     <li>
                         <i class="fa-solid fa-circle-check"></i>
