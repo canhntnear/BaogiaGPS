@@ -275,6 +275,7 @@
             text-align: left;
         }
 
+        /* Đồng bộ căn giữa tiêu đề cột */
         table.quote-table th {
             background: #f8fafc;
             color: var(--slate-700);
@@ -283,6 +284,7 @@
             border-bottom: 1px solid var(--border);
             border-right: 1px solid var(--slate-200);
             vertical-align: middle;
+            text-align: center !important;
         }
 
         table.quote-table td {
@@ -551,6 +553,7 @@
             .sec-title { font-size: 0.85rem; margin: 8px 0 4px 0; padding-bottom: 2px; }
             .table-wrap { margin-bottom: 8px; }
             table.quote-table th, table.quote-table td { padding: 5px 4px; font-size: 0.78rem; }
+            table.quote-table th { text-align: center !important; }
             
             .summary-box { padding: 8px 10px; margin: 8px 0; gap: 6px; background: transparent !important; border: 1px solid var(--border); }
             .terms-list ul { font-size: 0.75rem; line-height: 1.35; }
@@ -613,7 +616,7 @@
 
             <!-- Alert NVKD -->
             <div class="admin-alert" id="adminAlert">
-                <div><strong><i class="fa-solid fa-user-pen"></i> Chế độ NVKD:</strong> Bấm vào Khách hàng, Ngày lập, SĐT để sửa đổi.</div>
+                <div><strong><i class="fa-solid fa-user-pen"></i> Chế độ NVKD:</strong> Bấm vào Ngày lập, SĐT để sửa đổi.</div>
                 <button class="btn btn-print" style="padding: 2px 8px; font-size: 0.75rem; background: #fff; color: #1e40af; border: 1px solid #bfdbfe;" onclick="lockAdmin()">Khóa lại</button>
             </div>
 
@@ -650,10 +653,10 @@
                 </table>
             </div>
 
-            <!-- Recipient Box -->
+            <!-- Recipient Box - Cho phép nhập tự do từ bên ngoài -->
             <div class="recipient-box">
                 <span class="rec-label">Kính gửi:</span>
-                <span class="rec-name editable-field" id="customerName" contenteditable="false">Quý Khách hàng</span>
+                <span class="rec-name always-editable" id="customerName" contenteditable="true">Quý Khách hàng</span>
             </div>
 
             <p class="intro-text">
@@ -676,12 +679,12 @@
                     </colgroup>
                     <thead>
                         <tr>
-                            <th class="text-center">TT</th>
+                            <th>TT</th>
                             <th>Tên sản phẩm/ Dịch vụ</th>
-                            <th class="text-center">ĐVT</th>
-                            <th class="text-center">Số lượng</th>
-                            <th class="text-right">Đơn giá<br>(VNĐ)</th>
-                            <th class="text-right">Thành tiền đã bao gồm thuế GTGT (VNĐ)</th>
+                            <th>ĐVT</th>
+                            <th>Số lượng</th>
+                            <th>Đơn giá<br>(VNĐ)</th>
+                            <th>Thành tiền đã bao gồm thuế GTGT (VNĐ)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -736,12 +739,12 @@ Số chứng nhận: 26.21.01/CNSP</div>
                     </colgroup>
                     <thead>
                         <tr>
-                            <th class="text-center">TT</th>
+                            <th>TT</th>
                             <th>Tên sản phẩm/ Dịch vụ</th>
-                            <th class="text-center">ĐVT</th>
-                            <th class="text-center">Thuế Suất</th>
-                            <th class="text-right">Đơn giá<br>(VNĐ)</th>
-                            <th class="text-right">Thành tiền đã bao gồm thuế GTGT (VNĐ)</th>
+                            <th>ĐVT</th>
+                            <th>Thuế Suất</th>
+                            <th>Đơn giá<br>(VNĐ)</th>
+                            <th>Thành tiền đã bao gồm thuế GTGT (VNĐ)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -866,7 +869,7 @@ Số chứng nhận: 26.21.01/CNSP</div>
     <div class="modal-bg" id="passModal">
         <div class="modal-box">
             <h3><i class="fa-solid fa-shield-halved text-primary"></i> Mở khóa NVKD</h3>
-            <p>Nhập mật khẩu để chỉnh sửa tên khách hàng, ngày tháng và số liên hệ.</p>
+            <p>Nhập mật khẩu để chỉnh sửa ngày tháng và số liên hệ người báo giá.</p>
             <input type="password" id="passInput" placeholder="Nhập mật khẩu" onkeydown="if(event.key==='Enter') checkPass()">
             <div class="modal-err" id="passErr">Mật khẩu không chính xác!</div>
             <div style="display: flex; gap: 8px;">
