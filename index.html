@@ -90,9 +90,6 @@
             white-space: nowrap;
         }
 
-        .btn-nvkd { background: #fef3c7; color: #92400e; }
-        .btn-nvkd:hover { background: #fde68a; }
-
         .btn-print { background: rgba(255,255,255,0.15); color: var(--white); }
         .btn-print:hover { background: rgba(255,255,255,0.25); }
 
@@ -385,7 +382,6 @@
 
         .sign-date { font-size: 0.8rem; color: var(--slate-600); min-height: 18px; margin-bottom: 2px; }
         .sign-heading { font-size: 0.88rem; font-weight: 700; color: var(--slate-800); margin-bottom: 2px; }
-        .sign-guide { font-size: 0.75rem; color: var(--slate-500); }
         .order-qty-input { margin-top: 6px; font-size: 0.85rem; font-weight: 700; color: var(--slate-900); }
         .order-qty-val {
             display: inline-block;
@@ -450,73 +446,24 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
-        /* Admin Mode & Always Editable Elements */
-        .editable-field { outline: none; border-radius: 3px; }
-        .always-editable {
+        /* Always Editable Fields (Directly Editable) */
+        .editable-field {
+            outline: none;
+            border-radius: 3px;
             background-color: #fffbeb;
             border: 1px dashed #f59e0b;
             padding: 1px 4px;
             cursor: text;
         }
-        body.admin-mode .editable-field {
-            background-color: #fffbeb !important;
-            border: 1px dashed #f59e0b !important;
-            padding: 1px 4px;
-            cursor: text;
-        }
-
-        .admin-alert {
-            display: none;
-            background: #eff6ff;
-            border: 1px solid #93c5fd;
-            padding: 8px 12px;
-            border-radius: 6px;
-            margin-bottom: 14px;
-            font-size: 0.82rem;
-            color: #1e40af;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .admin-alert.active { display: flex; }
-
-        /* Modal Authentication */
-        .modal-bg {
-            display: none;
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(4px);
-            z-index: 999;
-            align-items: center; justify-content: center;
-            padding: 16px;
-        }
-        .modal-bg.open { display: flex; }
-
-        .modal-box {
-            background: var(--white);
-            border-radius: 10px; padding: 24px;
-            width: 100%; max-width: 360px;
-            text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-
-        .modal-box h3 { font-size: 1.1rem; color: var(--slate-900); margin-bottom: 6px; }
-        .modal-box p { font-size: 0.8rem; color: var(--slate-500); margin-bottom: 14px; }
-        .modal-box input {
-            width: 100%; padding: 9px 12px;
-            border: 1px solid var(--border); border-radius: 6px;
-            font-size: 0.95rem; text-align: center;
-            margin-bottom: 12px; outline: none;
-        }
-        .modal-err { color: #dc2626; font-size: 0.75rem; margin-top: -8px; margin-bottom: 10px; display: none; }
 
         /* Print Styling Optimization */
         @media print {
             @page { size: A4 portrait; margin: 6mm 8mm; }
             body { background: white; padding: 0; font-size: 10.5px; }
-            .app-bar, .admin-alert, .modal-bg, .toggle-attachment-btn { display: none !important; }
+            .app-bar, .toggle-attachment-btn { display: none !important; }
             .page-container { max-width: 100%; margin: 0; padding: 0; }
             .document-paper { border: none; box-shadow: none; padding: 0; }
-            .always-editable, .order-qty-val { background: transparent !important; border: none !important; padding: 0 !important; color: inherit !important; }
+            .editable-field, .order-qty-val { background: transparent !important; border: none !important; padding: 0 !important; color: inherit !important; }
             
             .company-header-table {
                 display: table !important;
@@ -578,7 +525,6 @@
                 padding-top: 6px;
             }
             .sign-space { height: 35px; }
-            body.admin-mode .editable-field { background: transparent !important; border: none !important; padding: 0 !important; }
 
             .attachment-container {
                 display: block !important;
@@ -606,13 +552,10 @@
                 <i class="fa-solid fa-file-invoice-dollar"></i> Vạn Phú Khánh
             </div>
             <div class="app-bar-actions">
-                <button id="adminBtn" class="btn btn-nvkd" onclick="openPassModal()">
-                    <i class="fa-solid fa-lock"></i> <span id="adminBtnText">NVKD</span>
-                </button>
                 <button class="btn btn-print" onclick="window.print()">
                     <i class="fa-solid fa-print"></i> In / PDF
                 </button>
-                <a id="topCallBtn" href="tel:0814461234" class="btn btn-call">
+                <a id="topCallBtn" href="tel:0585114114" class="btn btn-call">
                     <i class="fa-solid fa-phone"></i> Gọi ngay
                 </a>
             </div>
@@ -622,12 +565,6 @@
     <!-- MAIN PAGE CONTAINER -->
     <div class="page-container">
         <div class="document-paper">
-
-            <!-- Alert NVKD -->
-            <div class="admin-alert" id="adminAlert">
-                <div><strong><i class="fa-solid fa-user-pen"></i> Chế độ NVKD:</strong> Bấm vào Ngày lập, SĐT để sửa đổi.</div>
-                <button class="btn btn-print" style="padding: 2px 8px; font-size: 0.75rem; background: #fff; color: #1e40af; border: 1px solid #bfdbfe;" onclick="lockAdmin()">Khóa lại</button>
-            </div>
 
             <!-- Company Header -->
             <table class="company-header-table">
@@ -639,7 +576,7 @@
                         <div class="company-details">
                             <h1>CÔNG TY TNHH 114 VẠN PHÚ KHÁNH</h1>
                             <p><i class="fa-solid fa-location-dot"></i> Thôn Tân Mỹ, xã Tân Định, tỉnh Khánh Hòa</p>
-                            <p><i class="fa-solid fa-globe"></i> <a href="https://giamsatxe.net/" target="_blank">giamsatxe.net</a> &nbsp;|&nbsp; <a href="https://dinhvi.org/" target="_blank">dinhvi.org</a> &nbsp;|&nbsp; <a href="https://vanphukhanh.com/" target="_blank">vanphukhanh.com</a> &nbsp;|&nbsp; <a href="https://camxe.org/" target="_blank">camxe.org</a> &nbsp;|&nbsp; <i class="fa-solid fa-phone"></i> Hotline: <strong id="headerPhone" class="editable-field" contenteditable="false" onblur="syncInfo('phone', this.innerText)">081.446.1234</strong> (<span id="headerName" class="editable-field" contenteditable="false" onblur="syncInfo('name', this.innerText)">Giang Nam</span>)</p>
+                            <p><i class="fa-solid fa-globe"></i> <a href="https://giamsatxe.net/" target="_blank">giamsatxe.net</a> &nbsp;|&nbsp; <a href="https://dinhvi.org/" target="_blank">dinhvi.org</a> &nbsp;|&nbsp; <a href="https://vanphukhanh.com/" target="_blank">vanphukhanh.com</a> &nbsp;|&nbsp; <a href="https://camxe.org/" target="_blank">camxe.org</a> &nbsp;|&nbsp; <i class="fa-solid fa-phone"></i> Hotline: <strong id="headerPhone" class="editable-field" contenteditable="true" onblur="syncInfo('phone', this.innerText)">0585114114</strong> (<span id="headerName" class="editable-field" contenteditable="true" onblur="syncInfo('name', this.innerText)">Mỹ Hoài</span>)</p>
                         </div>
                     </td>
                 </tr>
@@ -655,17 +592,17 @@
                 
                 <table class="hero-meta-table">
                     <tr>
-                        <td style="width: 30%;">Số văn bản: <strong class="always-editable" id="docCode" contenteditable="true">BG-VPK/2026-1609</strong></td>
-                        <td style="width: 40%;">Lập ngày <strong class="editable-field" id="docDateText" contenteditable="false" onblur="syncDocDate(this.innerText)">--</strong></td>
+                        <td style="width: 30%;">Số văn bản: <strong class="editable-field" id="docCode" contenteditable="true">BG-VPK/2026-1609</strong></td>
+                        <td style="width: 40%;">Lập ngày <strong class="editable-field" id="docDateText" contenteditable="true">--</strong></td>
                         <td style="width: 30%;">Hiệu lực: <strong>30 ngày</strong></td>
                     </tr>
                 </table>
             </div>
 
-            <!-- Recipient Box - Cho phép nhập tự do từ bên ngoài -->
+            <!-- Recipient Box -->
             <div class="recipient-box">
                 <span class="rec-label">Kính gửi:</span>
-                <span class="rec-name always-editable" id="customerName" contenteditable="true">Quý Khách hàng</span>
+                <span class="rec-name editable-field" id="customerName" contenteditable="true">Quý Khách hàng</span>
             </div>
 
             <p class="intro-text">
@@ -700,13 +637,13 @@
                         <tr>
                             <td class="text-center" style="font-weight: bold;">1</td>
                             <td>
-                                <div class="item-title">THIẾT BỊ GIÁM SÁT HÀNH TRÌNH 3T02-S
-Số chứng nhận: 26.21.01/CNSP</div>
+                                <div class="item-title">THIẾT BỊ GIÁM SÁT HÀNH TRÌNH kiểu loại: 3T02-S
+Số chứng nhận: 26.21.01/CNSP & A0598050826BE21A5</div>
                             </td>
                             <td class="text-center">Bộ</td>
                             <td class="text-center" style="font-weight: 700;" id="tableQty">1</td>
                             <td class="text-right price-val">
-                                <span id="hardwarePrice" class="always-editable" contenteditable="true" onblur="handleHardwarePrice(this)">950,000</span>
+                                <span id="hardwarePrice" class="editable-field" contenteditable="true" onblur="handleHardwarePrice(this)">950,000</span>
                             </td>
                             <td class="text-right total-val" id="row1Total">1,026,000</td>
                         </tr>
@@ -776,25 +713,21 @@ Số chứng nhận: 26.21.01/CNSP</div>
                 <tr>
                     <td>
                         <div class="sign-date"></div>
-                        <div class="sign-heading">Khách hàng nhận đặt hàng</div>
-                        <div class="sign-guide">(Ký, ghi rõ họ tên và đóng dấu)</div>
+                        <div class="sign-heading">ĐẠI DIỆN KHÁCH HÀNG</div>
                         <div class="order-qty-input">
-                            Số lượng cần đặt: <span id="orderQty" class="order-qty-val" contenteditable="true" onblur="handleQtyChange(this)">01</span> Bộ
+                            Chúng tôi xác nhận đặt hàng: <span id="orderQty" class="order-qty-val" contenteditable="true" onblur="handleQtyChange(this)">01</span> Bộ
                         </div>
                         <div class="sign-space"></div>
                     </td>
                     <td>
-                        <div class="sign-date">
-                            <em>Khánh Hòa, ngày <span id="signDateText" class="editable-field" contenteditable="false" onblur="syncSignDate(this.innerText)">--</span></em>
-                        </div>
-                        <div class="sign-heading">Người báo giá</div>
+                        <div class="sign-date"></div>
+                        <div class="sign-heading">ĐẠI DIỆN BÊN BÁN</div>
                         <div class="sign-space"></div>
                         <div class="sign-author-name">
-                            <span id="signName" class="editable-field" contenteditable="false" onblur="syncInfo('name', this.innerText)">Giang Nam</span>
+                            <span id="signName" class="editable-field" contenteditable="true" onblur="syncInfo('name', this.innerText)">Mỹ Hoài</span>
                         </div>
                         <div class="sign-author-phone">
-                            <i class="fa-solid fa-phone"></i> 
-                            <span id="signPhone" class="editable-field" contenteditable="false" onblur="syncInfo('phone', this.innerText)">081.446.1234</span>
+                            <span id="signPhone" class="editable-field" contenteditable="true" onblur="syncInfo('phone', this.innerText)">0585114114</span>
                         </div>
                     </td>
                 </tr>
@@ -803,7 +736,7 @@ Số chứng nhận: 26.21.01/CNSP</div>
             <!-- TỔNG DỰ TOÁN ĐƠN HÀNG -->
             <div class="calc-total-card">
                 <div class="calc-label" id="grandTotalLabel">
-                    TỔNG DỰ TOÁN ĐƠN HÀNG (01 BỘ BAN ĐẦU):
+                    TỔNG DỰ TOÁN ĐƠN HÀNG (01 BỘ THIẾT BỊ GIÁM SÁT XE):
                 </div>
                 <div class="calc-number" id="grandTotalText">1.026.000 VNĐ</div>
             </div>
@@ -875,23 +808,6 @@ Số chứng nhận: 26.21.01/CNSP</div>
         </div>
     </div>
 
-    <!-- MODAL NHẬP MẬT KHẨU NVKD -->
-    <div class="modal-bg" id="passModal">
-        <div class="modal-box">
-            <h3><i class="fa-solid fa-shield-halved text-primary"></i> Mở khóa NVKD</h3>
-            <p>Nhập mật khẩu để chỉnh sửa ngày tháng và số liên hệ người báo giá.</p>
-            <input type="password" id="passInput" placeholder="Nhập mật khẩu" onkeydown="if(event.key==='Enter') checkPass()">
-            <div class="modal-err" id="passErr">Mật khẩu không chính xác!</div>
-            <div style="display: flex; gap: 8px;">
-                <button class="btn btn-print" style="flex: 1; background: #e2e8f0; color: #334155;" onclick="closePassModal()">Hủy</button>
-                <button class="btn btn-call" style="flex: 1;" onclick="checkPass()">Mở khóa</button>
-            </div>
-            <p style="font-size: 0.76rem; color: #64748b; margin-top: 12px; margin-bottom: 0; background: #f1f5f9; padding: 6px 10px; border-radius: 6px; border: 1px dashed #cbd5e1;">
-                <i class="fa-solid fa-key text-primary"></i> Mật khẩu mặc định: <strong>0585114114</strong>
-            </p>
-        </div>
-    </div>
-
     <!-- JAVASCRIPT -->
     <script>
         let unitPrice = 950000;
@@ -899,9 +815,6 @@ Số chứng nhận: 26.21.01/CNSP</div>
         const softwarePrice = 880000;
         const VAT_RATE = 0.08;
         const SOFT_VAT = 0.10;
-
-        let isAdmin = false;
-        const PASS_LIST = ["0585114114", "123456", "vpk114"];
 
         function formatNum(num) {
             return new Intl.NumberFormat('vi-VN').format(Math.round(num));
@@ -925,7 +838,6 @@ Số chứng nhận: 26.21.01/CNSP</div>
             const docCodeStr = `BG-VPK/${year}-${day}${month}`;
 
             document.getElementById('docDateText').innerText = dateStr;
-            document.getElementById('signDateText').innerText = dateStr;
             document.getElementById('docCode').innerText = docCodeStr;
         }
 
@@ -938,7 +850,7 @@ Số chứng nhận: 26.21.01/CNSP</div>
             document.getElementById('grandTotalText').innerText = formatNum(grandTotal) + ' VNĐ';
             
             const qtyStr = padTwo(currentQty);
-            document.getElementById('grandTotalLabel').innerText = `TỔNG DỰ TOÁN ĐƠN HÀNG (${qtyStr} BỘ BAN ĐẦU):`;
+            document.getElementById('grandTotalLabel').innerText = `TỔNG DỰ TOÁN ĐƠN HÀNG (${qtyStr} BỘ THIẾT BỊ GIÁM SÁT XE):`;
 
             const softTotal = Math.round(softwarePrice * (1 + SOFT_VAT));
             document.getElementById('softTotal').innerText = formatNum(softTotal);
@@ -958,16 +870,6 @@ Số chứng nhận: 26.21.01/CNSP</div>
             currentQty = val;
             el.innerText = padTwo(currentQty);
             calcTotal();
-        }
-
-        function syncDocDate(val) {
-            let clean = val.trim();
-            document.getElementById('signDateText').innerText = clean;
-        }
-
-        function syncSignDate(val) {
-            let clean = val.trim();
-            document.getElementById('docDateText').innerText = clean;
         }
 
         function syncInfo(type, val) {
@@ -999,56 +901,6 @@ Số chứng nhận: 26.21.01/CNSP</div>
                 box.classList.add('show');
                 text.innerText = "Ẩn Tài Liệu Chứng Nhận";
                 icon.className = "fa-solid fa-eye-slash";
-            }
-        }
-
-        function openPassModal() {
-            if (isAdmin) {
-                lockAdmin();
-            } else {
-                document.getElementById('passInput').value = '';
-                document.getElementById('passErr').style.display = 'none';
-                document.getElementById('passModal').classList.add('open');
-                setTimeout(() => document.getElementById('passInput').focus(), 150);
-            }
-        }
-
-        function closePassModal() {
-            document.getElementById('passModal').classList.remove('open');
-        }
-
-        function checkPass() {
-            let p = document.getElementById('passInput').value.trim();
-            if (PASS_LIST.includes(p)) {
-                isAdmin = true;
-                closePassModal();
-                setAdmin(true);
-            } else {
-                document.getElementById('passErr').style.display = 'block';
-            }
-        }
-
-        function lockAdmin() {
-            isAdmin = false;
-            setAdmin(false);
-        }
-
-        function setAdmin(active) {
-            const body = document.body;
-            const btnText = document.getElementById('adminBtnText');
-            const alert = document.getElementById('adminAlert');
-            const editables = document.querySelectorAll('.editable-field');
-
-            if (active) {
-                body.classList.add('admin-mode');
-                btnText.innerText = 'Khóa';
-                alert.classList.add('active');
-                editables.forEach(e => e.setAttribute('contenteditable', 'true'));
-            } else {
-                body.classList.remove('admin-mode');
-                btnText.innerText = 'NVKD';
-                alert.classList.remove('active');
-                editables.forEach(e => e.setAttribute('contenteditable', 'false'));
             }
         }
 
