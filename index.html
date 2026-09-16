@@ -303,6 +303,20 @@
         .price-val { font-weight: 600; white-space: nowrap; }
         .total-val { font-weight: 800; color: var(--primary); white-space: nowrap; }
 
+        /* Dropdown thuế suất tùy chọn */
+        .vat-select {
+            padding: 2px 4px;
+            border-radius: 4px;
+            border: 1px dashed #f59e0b;
+            background-color: #fffbeb;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--slate-800);
+            outline: none;
+            cursor: pointer;
+            text-align-last: center;
+        }
+
         /* Summary & Terms */
         .summary-box {
             background: #f8fafc;
@@ -466,6 +480,18 @@
             .document-paper { border: none; box-shadow: none; padding: 0; }
             .editable-field, .order-qty-val { background: transparent !important; border: none !important; padding: 0 !important; color: inherit !important; }
             
+            /* Chuyển select thành chữ phẳng khi in */
+            .vat-select {
+                appearance: none;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                border: none !important;
+                background: transparent !important;
+                padding: 0 !important;
+                font-weight: 600 !important;
+                color: inherit !important;
+            }
+
             .company-header-table {
                 display: table !important;
                 width: 100% !important;
@@ -606,12 +632,11 @@
                 <span class="rec-name editable-field" id="customerName" contenteditable="true">Quý Khách hàng</span>
             </div>
 
-            <!-- Phần mở đầu đã được chuẩn hóa phong cách hành chính -->
             <p class="intro-text">
                 <strong>CÔNG TY TNHH 114 VẠN PHÚ KHÁNH</strong> trân trọng kính gửi Quý Công ty báo giá gói sản phẩm và dịch vụ, đáp ứng các tiêu chuẩn, quy chuẩn kỹ thuật hiện hành của Nhà nước, chi tiết như sau:
             </p>
 
-            <!-- 1. THIẾT BỊ KHỞI TẠO BAN ĐẦU (ĐÃ THÊM CỘT THUẾ SUẤT 8%) -->
+            <!-- 1. THIẾT BỊ KHỞI TẠO BAN ĐẦU -->
             <div class="sec-title">
                 <i class="fa-solid fa-box-open"></i> THIẾT BỊ KHỞI TẠO BAN ĐẦU
             </div>
@@ -620,10 +645,10 @@
                     <colgroup>
                         <col style="width: 7%;">
                         <col style="width: 43%;">
-                        <col style="width: 10%;">
-                        <col style="width: 12%;">
-                        <col style="width: 13%;">
-                        <col style="width: 15%;">
+                        <col style="width: 9%;">
+                        <col style="width: 9%;">
+                        <col style="width: 14%;">
+                        <col style="width: 18%;">
                     </colgroup>
                     <thead>
                         <tr>
@@ -633,7 +658,7 @@
                             <th>Số lượng</th>
                             <th>Thuế suất</th>
                             <th>Đơn giá<br>(VNĐ)</th>
-                            <th>Thành tiền đã bao gồm thuế GTGT (VNĐ)</th>
+                            <th>Thành tiền ( VNĐ )</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -645,11 +670,17 @@
                             </td>
                             <td class="text-center">Bộ</td>
                             <td class="text-center" style="font-weight: 700;" id="tableQty">1</td>
-                            <td class="text-center" style="font-weight: 600;">8%</td>
+                            <td class="text-center">
+                                <select id="hardwareVatSelect" class="vat-select" onchange="handleVatChange()">
+                                    <option value="0">KCT</option>
+                                    <option value="0.08">8%</option>
+                                    <option value="0.10" selected>10%</option>
+                                </select>
+                            </td>
                             <td class="text-right price-val">
                                 <span id="hardwarePrice" class="editable-field" contenteditable="true" onblur="handleHardwarePrice(this)">950,000</span>
                             </td>
-                            <td class="text-right total-val" id="row1Total">1,026,000</td>
+                            <td class="text-right total-val" id="row1Total">1,045,000</td>
                         </tr>
                     </tbody>
                 </table>
@@ -682,10 +713,10 @@
                     <colgroup>
                         <col style="width: 7%;">
                         <col style="width: 43%;">
-                        <col style="width: 10%;">
-                        <col style="width: 12%;">
-                        <col style="width: 13%;">
-                        <col style="width: 15%;">
+                        <col style="width: 9%;">
+                        <col style="width: 9%;">
+                        <col style="width: 14%;">
+                        <col style="width: 18%;">
                     </colgroup>
                     <thead>
                         <tr>
@@ -695,7 +726,7 @@
                             <th>Thời hạn</th>
                             <th>Thuế suất</th>
                             <th>Đơn giá<br>(VNĐ)</th>
-                            <th>Thành tiền đã bao gồm thuế GTGT (VNĐ)</th>
+                            <th>Thành tiền ( VNĐ )</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -704,7 +735,13 @@
                             <td><div class="item-title">Phí dịch vụ phần mềm giám sát hành trình</div></td>
                             <td class="text-center">Gói</td>
                             <td class="text-center">12 tháng</td>
-                            <td class="text-center" style="font-weight: 600;">10%</td>
+                            <td class="text-center">
+                                <select id="softwareVatSelect" class="vat-select" onchange="handleVatChange()">
+                                    <option value="0">KCT</option>
+                                    <option value="0.08">8%</option>
+                                    <option value="0.10" selected>10%</option>
+                                </select>
+                            </td>
                             <td class="text-right price-val">
                                 <span id="softwarePrice">880,000</span>
                             </td>
@@ -744,7 +781,7 @@
                 <div class="calc-label" id="grandTotalLabel">
                     TỔNG DỰ TOÁN ĐƠN HÀNG (01 BỘ THIẾT BỊ GIÁM SÁT XE):
                 </div>
-                <div class="calc-number" id="grandTotalText">1.026.000 VNĐ</div>
+                <div class="calc-number" id="grandTotalText">1.045.000 VNĐ</div>
             </div>
 
             <!-- NGẮT TRANG ĐỂ ĐẨY PHẦN THÔNG TIN THÊM & TÀI LIỆU XUỐNG TRANG SAU KHI IN -->
@@ -819,8 +856,6 @@
         let unitPrice = 950000;
         let currentQty = 1;
         const softwarePrice = 880000;
-        const VAT_RATE = 0.08;
-        const SOFT_VAT = 0.10;
 
         function formatNum(num) {
             return new Intl.NumberFormat('vi-VN').format(Math.round(num));
@@ -848,8 +883,11 @@
         }
 
         function calcTotal() {
+            const hwVatRate = parseFloat(document.getElementById('hardwareVatSelect').value) || 0;
+            const swVatRate = parseFloat(document.getElementById('softwareVatSelect').value) || 0;
+
             const subtotal = currentQty * unitPrice;
-            const grandTotal = subtotal * (1 + VAT_RATE);
+            const grandTotal = subtotal * (1 + hwVatRate);
 
             document.getElementById('tableQty').innerText = currentQty;
             document.getElementById('row1Total').innerText = formatNum(grandTotal);
@@ -858,7 +896,7 @@
             const qtyStr = padTwo(currentQty);
             document.getElementById('grandTotalLabel').innerText = `TỔNG DỰ TOÁN ĐƠN HÀNG (${qtyStr} BỘ THIẾT BỊ GIÁM SÁT XE):`;
 
-            const softTotal = Math.round(softwarePrice * (1 + SOFT_VAT));
+            const softTotal = Math.round(softwarePrice * (1 + swVatRate));
             document.getElementById('softTotal').innerText = formatNum(softTotal);
         }
 
@@ -875,6 +913,10 @@
             if (val <= 0) val = 1;
             currentQty = val;
             el.innerText = padTwo(currentQty);
+            calcTotal();
+        }
+
+        function handleVatChange() {
             calcTotal();
         }
 
