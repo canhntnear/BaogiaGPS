@@ -442,7 +442,7 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
-        /* Admin Mode */
+        /* Admin Mode & Always Editable Elements */
         .editable-field { outline: none; border-radius: 3px; }
         .always-editable {
             background-color: #fffbeb;
@@ -643,7 +643,7 @@
                 
                 <table class="hero-meta-table">
                     <tr>
-                        <td style="width: 30%;">Số văn bản: <strong class="editable-field" id="docCode" contenteditable="false">BG-VPK/2026-CR01</strong></td>
+                        <td style="width: 30%;">Số văn bản: <strong class="always-editable" id="docCode" contenteditable="true">BG-VPK/2026-1609</strong></td>
                         <td style="width: 40%;">Lập ngày <strong class="editable-field" id="docDateText" contenteditable="false" onblur="syncDocDate(this.innerText)">--</strong></td>
                         <td style="width: 30%;">Hiệu lực: <strong>30 ngày</strong></td>
                     </tr>
@@ -722,7 +722,7 @@ Số chứng nhận: 26.21.01/CNSP</div>
                 <i class="fa-solid fa-arrows-rotate"></i> DỊCH VỤ DUY TRÌ
             </div>
             <p style="font-size: 0.82rem; color: var(--slate-700); margin-bottom: 6px;">
-                Sau 12 tháng kể từ ngày kích hoạt, Căn cứ theo nhu cầu sử dụng Khách hàng cần đóng phí duy trì sử dụng cho từng thiết bị chi tiết như sau:
+                Căn cứ theo nhu cầu sử dụng Khách hàng cần đóng phí duy trì sử dụng cho từng thiết bị chi tiết như sau:
             </p>
             <div class="table-wrap">
                 <table class="quote-table">
@@ -854,7 +854,7 @@ Số chứng nhận: 26.21.01/CNSP</div>
                     </p>
                     
                     <div style="text-align: center;">
-                        <img src="https://github.com/canhntnear/baogiacam4g/raw/main/QCVN06CAM4G02_page-0002.jpg" alt="Chứng nhận QCVN06 Trang 2">
+                        <img src="https://raw.githubusercontent.com/canhntnear/BaogiaGPS/main/GCN02S.jpg" alt="Giấy chứng nhận 3T02-S GCN02S">
                     </div>
                 </div>
             </div>
@@ -907,10 +907,13 @@ Số chứng nhận: 26.21.01/CNSP</div>
             const day = padTwo(today.getDate());
             const month = padTwo(today.getMonth() + 1);
             const year = today.getFullYear();
+            
             const dateStr = `${day} tháng ${month} năm ${year}`;
+            const docCodeStr = `BG-VPK/${year}-${day}${month}`;
 
             document.getElementById('docDateText').innerText = dateStr;
             document.getElementById('signDateText').innerText = dateStr;
+            document.getElementById('docCode').innerText = docCodeStr;
         }
 
         function calcTotal() {
