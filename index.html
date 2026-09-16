@@ -347,19 +347,39 @@
         .terms-list ul { padding-left: 18px; font-size: 0.78rem; color: var(--slate-700); line-height: 1.45; }
         .terms-list li { margin-bottom: 4px; }
 
+        /* Khối tổng dự toán & bằng chữ */
         .calc-total-card {
             background: var(--white);
             border: 2px solid #b91c1c;
             border-radius: 6px;
             padding: 10px 14px;
-            display: flex; justify-content: space-between; align-items: center;
-            flex-wrap: wrap; gap: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
             margin-top: 14px;
             margin-bottom: 14px;
         }
 
+        .calc-row-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
         .calc-total-card .calc-label { font-size: 0.95rem; font-weight: 800; color: #1e293b; text-transform: uppercase; }
         .calc-total-card .calc-number { font-size: 1.25rem; font-weight: 800; color: #b91c1c; }
+
+        .calc-words-row {
+            font-size: 0.82rem;
+            color: var(--slate-700);
+            border-top: 1px dashed var(--slate-300);
+            padding-top: 5px;
+            line-height: 1.4;
+        }
+        .calc-words-row strong { color: var(--slate-900); }
+        .calc-words-val { font-weight: 600; font-style: italic; color: #b91c1c; }
 
         /* Product Info Box */
         .product-info-box {
@@ -472,11 +492,15 @@
             padding: 1px 4px;
             cursor: text;
         }
+
+        /* Khi mở khóa NVKD: đổi vùng dữ liệu sang màu xanh nước biển */
         body.admin-mode .editable-field {
-            background-color: #fffbeb !important;
-            border: 1px dashed #f59e0b !important;
-            padding: 1px 4px;
+            background-color: #eff6ff !important;
+            border: 1.5px dashed #2563eb !important;
+            color: #1d4ed8 !important;
+            padding: 1px 6px;
             cursor: text;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
         }
 
         .admin-alert {
@@ -531,9 +555,8 @@
             .page-container { max-width: 100%; margin: 0; padding: 0; }
             .document-paper { border: none; box-shadow: none; padding: 0; }
             .always-editable, .order-qty-val { background: transparent !important; border: none !important; padding: 0 !important; color: inherit !important; }
-            body.admin-mode .editable-field { background: transparent !important; border: none !important; padding: 0 !important; }
+            body.admin-mode .editable-field { background: transparent !important; border: none !important; padding: 0 !important; color: inherit !important; box-shadow: none !important; }
 
-            /* Chuyển select thành chữ phẳng khi in */
             .vat-select {
                 appearance: none;
                 -webkit-appearance: none;
@@ -590,9 +613,11 @@
             
             .summary-box { padding: 8px 10px; margin: 8px 0; gap: 6px; background: transparent !important; border: 1px solid var(--border); }
             .terms-list ul { font-size: 0.75rem; line-height: 1.35; }
-            .calc-total-card { padding: 6px 10px; border: 1.5px solid #b91c1c; margin-top: 8px; margin-bottom: 8px; }
+            
+            .calc-total-card { padding: 6px 10px; border: 1.5px solid #b91c1c; margin-top: 8px; margin-bottom: 8px; gap: 4px; }
             .calc-total-card .calc-label { font-size: 0.85rem; }
             .calc-total-card .calc-number { font-size: 1.1rem; }
+            .calc-words-row { font-size: 0.75rem; padding-top: 3px; }
 
             .product-info-box { padding: 8px 10px; margin: 4px 0 8px 0; background: transparent !important; }
             .product-intro-p { margin-bottom: 4px; }
@@ -651,7 +676,7 @@
 
             <!-- Alert NVKD khi kích hoạt -->
             <div class="admin-alert" id="adminAlert">
-                <div><strong><i class="fa-solid fa-user-pen"></i> Chế độ NVKD:</strong> Bấm vào Ngày lập, Tên hoặc SĐT để sửa đổi.</div>
+                <div><strong><i class="fa-solid fa-user-pen"></i> Chế độ NVKD:</strong> Các vùng viền xanh nước biển đã được mở khóa để chỉnh sửa trực tiếp.</div>
                 <button class="btn btn-print" style="padding: 2px 8px; font-size: 0.75rem; background: #fff; color: #1e40af; border: 1px solid #bfdbfe;" onclick="lockAdmin()">Khóa lại</button>
             </div>
 
@@ -838,12 +863,17 @@
                 </tr>
             </table>
 
-            <!-- TỔNG DỰ TOÁN ĐƠN HÀNG -->
+            <!-- TỔNG DỰ TOÁN ĐƠN HÀNG (ĐÃ BỔ SUNG DÒNG BẰNG CHỮ) -->
             <div class="calc-total-card">
-                <div class="calc-label" id="grandTotalLabel">
-                    TỔNG DỰ TOÁN ĐƠN HÀNG (01 BỘ THIẾT BỊ GIÁM SÁT XE):
+                <div class="calc-row-main">
+                    <div class="calc-label" id="grandTotalLabel">
+                        TỔNG DỰ TOÁN ĐƠN HÀNG (01 BỘ THIẾT BỊ GIÁM SÁT XE):
+                    </div>
+                    <div class="calc-number" id="grandTotalText">1.045.000 VNĐ</div>
                 </div>
-                <div class="calc-number" id="grandTotalText">1.045.000 VNĐ</div>
+                <div class="calc-words-row">
+                    <strong>Bằng chữ:</strong> <span class="calc-words-val" id="grandTotalWords">Một triệu không trăm bốn mươi lăm nghìn đồng chẵn.</span>
+                </div>
             </div>
 
             <!-- NGẮT TRANG ĐỂ ĐẨY PHẦN THÔNG TIN THÊM & TÀI LIỆU XUỐNG TRANG SAU KHI IN -->
@@ -951,6 +981,71 @@
             return num < 10 ? '0' + num : num;
         }
 
+        /* HÀM ĐỌC TIỀN TIẾNG VIỆT CHUẨN XÁC */
+        function docSoTien(so) {
+            if (so === 0) return "Không đồng";
+            const ChuSo = [" không", " một", " hai", " ba", " bốn", " năm", " sáu", " bảy", " tám", " chín"];
+            const Tien = ["", " nghìn", " triệu", " tỷ", " nghìn tỷ", " triệu tỷ"];
+
+            function docSo3ChuSo(baso) {
+                let tram = Math.floor(baso / 100);
+                let chuc = Math.floor((baso % 100) / 10);
+                let donvi = baso % 10;
+                let ketQua = "";
+                if (tram === 0 && chuc === 0 && donvi === 0) return "";
+                if (tram !== 0) {
+                    ketQua += ChuSo[tram] + " trăm";
+                    if (chuc === 0 && donvi !== 0) ketQua += " lẻ";
+                }
+                if (chuc !== 0 && chuc !== 1) {
+                    ketQua += ChuSo[chuc] + " mươi";
+                    if (chuc === 0 && donvi !== 0) ketQua += " linh";
+                }
+                if (chuc === 1) ketQua += " mười";
+                switch (donvi) {
+                    case 1:
+                        if (chuc !== 0 && chuc !== 1) ketQua += " mốt";
+                        else ketQua += ChuSo[donvi];
+                        break;
+                    case 5:
+                        if (chuc === 0) ketQua += ChuSo[donvi];
+                        else ketQua += " lăm";
+                        break;
+                    default:
+                        if (donvi !== 0) ketQua += ChuSo[donvi];
+                        break;
+                }
+                return ketQua;
+            }
+
+            let lan = 0;
+            let i = 0;
+            let tongSo = Math.round(so);
+            let mangSo = [];
+            let chuoi = "";
+
+            if (tongSo < 0) return "Số tiền âm";
+
+            while (tongSo > 0) {
+                mangSo[lan] = tongSo % 1000;
+                tongSo = Math.floor(tongSo / 1000);
+                lan++;
+            }
+
+            for (i = lan - 1; i >= 0; i--) {
+                let doc = docSo3ChuSo(mangSo[i]);
+                if (doc !== "") {
+                    chuoi += doc + Tien[i];
+                }
+            }
+
+            chuoi = chuoi.trim();
+            if (chuoi.length > 0) {
+                chuoi = chuoi.charAt(0).toUpperCase() + chuoi.slice(1) + " đồng chẵn.";
+            }
+            return chuoi;
+        }
+
         function initTodayDate() {
             const today = new Date();
             const day = padTwo(today.getDate());
@@ -969,7 +1064,7 @@
             const swVatRate = parseFloat(document.getElementById('softwareVatSelect').value) || 0;
 
             const subtotal = currentQty * unitPrice;
-            const grandTotal = subtotal * (1 + hwVatRate);
+            const grandTotal = Math.round(subtotal * (1 + hwVatRate));
 
             document.getElementById('tableQty').innerText = currentQty;
             document.getElementById('row1Total').innerText = formatNum(grandTotal);
@@ -977,6 +1072,9 @@
             
             const qtyStr = padTwo(currentQty);
             document.getElementById('grandTotalLabel').innerText = `TỔNG DỰ TOÁN ĐƠN HÀNG (${qtyStr} BỘ THIẾT BỊ GIÁM SÁT XE):`;
+
+            // Cập nhật số tiền bằng chữ
+            document.getElementById('grandTotalWords').innerText = docSoTien(grandTotal);
 
             const softTotal = Math.round(softwarePrice * (1 + swVatRate));
             document.getElementById('softTotal').innerText = formatNum(softTotal);
