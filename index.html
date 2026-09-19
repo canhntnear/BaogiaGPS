@@ -310,7 +310,7 @@
         .price-val { font-weight: 600; white-space: nowrap; }
         .total-val { font-weight: 800; color: var(--primary); white-space: nowrap; }
 
-        /* Mép kéo co giãn cột (Resize Handle) */
+        /* Mép kéo co giãn cột */
         .col-resizer {
             position: absolute;
             top: 0;
@@ -539,6 +539,8 @@
             color: #1e40af;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
         }
         .admin-alert.active { display: flex; }
 
@@ -703,11 +705,14 @@
             <!-- Alert NVKD khi kích hoạt -->
             <div class="admin-alert" id="adminAlert">
                 <div>
-                    <strong><i class="fa-solid fa-user-pen"></i> Chế độ NVKD:</strong> Có thể sửa trực tiếp & kéo rê mép cột bảng để căn chỉnh độ rộng.
+                    <strong><i class="fa-solid fa-user-pen"></i> Chế độ NVKD:</strong> Dữ liệu sửa đổi (trừ Ngày & Số báo giá) sẽ tự động lưu lại vào trình duyệt.
                 </div>
                 <div style="display: flex; gap: 6px;">
                     <button class="btn btn-print" style="padding: 2px 8px; font-size: 0.75rem; background: #fff; color: #b45309; border: 1px solid #fde68a;" onclick="resetColWidths()">
-                        <i class="fa-solid fa-rotate-left"></i> Đặt lại cột
+                        <i class="fa-solid fa-arrows-left-right"></i> Đặt lại cột
+                    </button>
+                    <button class="btn btn-print" style="padding: 2px 8px; font-size: 0.75rem; background: #fff; color: #dc2626; border: 1px solid #fca5a5;" onclick="clearSavedData()">
+                        <i class="fa-solid fa-trash-can"></i> Xóa dữ liệu lưu
                     </button>
                     <button class="btn btn-print" style="padding: 2px 8px; font-size: 0.75rem; background: #fff; color: #1e40af; border: 1px solid #bfdbfe;" onclick="lockAdmin()">
                         Khóa lại
@@ -751,7 +756,7 @@
             <!-- Recipient Box -->
             <div class="recipient-box">
                 <span class="rec-label">Kính gửi:</span>
-                <span class="rec-name always-editable" id="customerName" contenteditable="true">Quý Khách hàng</span>
+                <span class="rec-name always-editable" id="customerName" contenteditable="true" onblur="saveCustomerName(this.innerText)">Quý Khách hàng</span>
             </div>
 
             <p class="intro-text">
@@ -1001,6 +1006,8 @@
         const PASS_LIST = ["0585114114", "123456", "vpk114"];
 
         const DEFAULT_WIDTHS = ['6%', '36%', '8%', '9%', '18%', '23%'];
+        const STORAGE_KEY_PARAMS = 'vpk_quote_params_v1';
+        const STORAGE_KEY_COLS = 'vpk_quote_col_widths';
 
         function formatRound(num) {
             return new Intl.NumberFormat('vi-VN').format(Math.round(num));
@@ -1025,6 +1032,66 @@
 
         function padTwo(num) {
             return num < 10 ? '0' + num : num;
+        }
+
+        /* HÀM LƯU / PHỤC HỒI DỮ LIỆU TỪ LOCALSTORAGE (TRỪ NGÀY & SỐ BÁO GIÁ) */
+        function saveParams() {
+            const data = {
+                customerName: document.getElementById('customerName').innerText.trim(),
+                unitPrice: unitPrice,
+                qty: currentQty,
+                hwVat: document.getElementById('hardwareVatSelect').value,
+                swVat: document.getElementById('softwareVatSelect').value,
+                nvkdName: document.getElementById('headerName').innerText.trim(),
+                nvkdPhone: document.getElementById('headerPhone').innerText.trim()
+            };
+            localStorage.setItem(STORAGE_KEY_PARAMS, JSON.stringify(data));
+        }
+
+        function loadSavedParams() {
+            const raw = localStorage.getItem(STORAGE_KEY_PARAMS);
+            if (!raw) return;
+            try {
+                const data = JSON.parse(raw);
+                if (data.customerName) {
+                    document.getElementById('customerName').innerText = data.customerName;
+                }
+                if (data.unitPrice && data.unitPrice > 0) {
+                    unitPrice = data.unitPrice;
+                    document.getElementById('hardwarePrice').innerText = formatRound(unitPrice);
+                }
+                if (data.qty && data.qty > 0) {
+                    currentQty = data.qty;
+                    document.getElementById('orderQty').innerText = padTwo(currentQty);
+                    document.getElementById('tableQty').innerText = currentQty;
+                }
+                if (data.hwVat !== undefined) {
+                    document.getElementById('hardwareVatSelect').value = data.hwVat;
+                }
+                if (data.swVat !== undefined) {
+                    document.getElementById('softwareVatSelect').value = data.swVat;
+                }
+                if (data.nvkdName) {
+                    document.getElementById('headerName').innerText = data.nvkdName;
+                    document.getElementById('signName').innerText = data.nvkdName;
+                }
+                if (data.nvkdPhone) {
+                    document.getElementById('headerPhone').innerText = data.nvkdPhone;
+                    document.getElementById('signPhone').innerText = data.nvkdPhone;
+                    let rawPhone = data.nvkdPhone.replace(/[^\d]/g, '');
+                    if (rawPhone) document.getElementById('topCallBtn').href = 'tel:' + rawPhone;
+                }
+            } catch (e) {
+                console.error('Không thể nạp dữ liệu đã lưu:', e);
+            }
+        }
+
+        function clearSavedData() {
+            if (confirm("Bạn có chắc chắn muốn xóa toàn bộ thông tin đã lưu (tên KH, giá, thông tin NVKD)?")) {
+                localStorage.removeItem(STORAGE_KEY_PARAMS);
+                localStorage.removeItem(STORAGE_KEY_COLS);
+                location.reload();
+            }
         }
 
         function docSoTien(so) {
@@ -1091,6 +1158,7 @@
             return chuoi;
         }
 
+        /* Ngày tháng và số văn bản luôn tạo mới theo ngày hiện tại */
         function initTodayDate() {
             const today = new Date();
             const day = padTwo(today.getDate());
@@ -1133,6 +1201,7 @@
             unitPrice = val;
             el.innerText = formatRound(unitPrice);
             calcTotal();
+            saveParams();
         }
 
         function handleQtyChange(el) {
@@ -1141,10 +1210,16 @@
             currentQty = val;
             el.innerText = padTwo(currentQty);
             calcTotal();
+            saveParams();
         }
 
         function handleVatChange() {
             calcTotal();
+            saveParams();
+        }
+
+        function saveCustomerName(name) {
+            saveParams();
         }
 
         function syncInfo(type, val) {
@@ -1161,6 +1236,7 @@
                     document.getElementById('topCallBtn').href = 'tel:' + raw;
                 }
             }
+            saveParams();
         }
 
         function toggleAttachment() {
@@ -1229,7 +1305,7 @@
             }
         }
 
-        /* --- TÍNH NĂNG KÉO RÊ CO GIÃN CỘT BẢNG (COL RESIZING) --- */
+        /* --- TÍNH NĂNG CO GIÃN CỘT BẢNG & LƯU VÀO LOCALSTORAGE --- */
         function applyColWidths(widths) {
             ['tableHardware', 'tableSoftware'].forEach(tableId => {
                 const table = document.getElementById(tableId);
@@ -1243,11 +1319,11 @@
 
         function resetColWidths() {
             applyColWidths(DEFAULT_WIDTHS);
-            localStorage.removeItem('vpk_quote_col_widths');
+            localStorage.removeItem(STORAGE_KEY_COLS);
         }
 
         function initColResize() {
-            const savedWidths = localStorage.getItem('vpk_quote_col_widths');
+            const savedWidths = localStorage.getItem(STORAGE_KEY_COLS);
             if (savedWidths) {
                 try { applyColWidths(JSON.parse(savedWidths)); } catch(e) {}
             }
@@ -1258,7 +1334,6 @@
                 if (!table) return;
                 const ths = table.querySelectorAll('thead th');
                 ths.forEach((th, i) => {
-                    // Không tạo resizer ở cột cuối
                     if (i === ths.length - 1) return;
 
                     const resizer = document.createElement('div');
@@ -1294,9 +1369,8 @@
                                 else currentWidths.push(c.style.width || DEFAULT_WIDTHS[idx]);
                             });
 
-                            // Đồng bộ độ rộng cho cả 2 bảng
                             applyColWidths(currentWidths);
-                            localStorage.setItem('vpk_quote_col_widths', JSON.stringify(currentWidths));
+                            localStorage.setItem(STORAGE_KEY_COLS, JSON.stringify(currentWidths));
                         }
 
                         function onMouseUp() {
@@ -1312,7 +1386,9 @@
             });
         }
 
+        // KHỞI CHẠY HỆ THỐNG
         initTodayDate();
+        loadSavedParams();
         calcTotal();
         initColResize();
     </script>
