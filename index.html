@@ -838,7 +838,7 @@
                 </table>
             </div>
 
-            <!-- BẢNG CHỮ KÝ XÁC NHẬN NẰM NGAY SAU DỊCH VỤ DUY TRÌ -->
+            <!-- BẢNG CHỮ KÝ XÁC NHẬN -->
             <table class="signature-table">
                 <tr>
                     <td>
@@ -863,7 +863,7 @@
                 </tr>
             </table>
 
-            <!-- TỔNG DỰ TOÁN ĐƠN HÀNG (ĐÃ BỔ SUNG DÒNG BẰNG CHỮ) -->
+            <!-- TỔNG DỰ TOÁN ĐƠN HÀNG -->
             <div class="calc-total-card">
                 <div class="calc-row-main">
                     <div class="calc-label" id="grandTotalLabel">
@@ -876,7 +876,7 @@
                 </div>
             </div>
 
-            <!-- NGẮT TRANG ĐỂ ĐẨY PHẦN THÔNG TIN THÊM & TÀI LIỆU XUỐNG TRANG SAU KHI IN -->
+            <!-- NGẮT TRANG IN -->
             <div class="page-break-before"></div>
 
             <!-- 4. THÔNG TIN THÊM VỀ SẢN PHẨM/DỊCH VỤ -->
@@ -969,12 +969,31 @@
         let isAdmin = false;
         const PASS_LIST = ["0585114114", "123456", "vpk114"];
 
+        // Định dạng số: Giữ nguyên số lẻ (tối đa 3 chữ số thập phân) nếu có, số nguyên thì không hiện ,00
         function formatNum(num) {
-            return new Intl.NumberFormat('vi-VN').format(Math.round(num));
+            const rounded = Math.round(num * 1000) / 1000;
+            return new Intl.NumberFormat('vi-VN', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 3
+            }).format(rounded);
         }
 
+        // Đọc giá trị người dùng nhập vào, hỗ trợ cả số thập phân (818.181,818 hoặc 818181.82)
         function cleanNum(str) {
-            return parseInt(str.replace(/[^\d]/g, '')) || 0;
+            if (!str) return 0;
+            let val = str.toString().trim();
+            // Nếu có cả dấu chấm và phẩy (ví dụ: 818.181,818)
+            if (val.includes('.') && val.includes(',')) {
+                if (val.lastIndexOf(',') > val.lastIndexOf('.')) {
+                    val = val.replace(/\./g, '').replace(',', '.');
+                } else {
+                    val = val.replace(/,/g, '');
+                }
+            } else if (val.includes(',')) {
+                val = val.replace(',', '.');
+            }
+            val = val.replace(/[^\d.]/g, '');
+            return parseFloat(val) || 0;
         }
 
         function padTwo(num) {
@@ -1059,12 +1078,19 @@
             document.getElementById('docCode').innerText = docCodeStr;
         }
 
+        // TÍNH TOÁN THEO CÁCH 2: Tính tiền hàng chưa VAT làm tròn nguyên trước, sau đó tính VAT
         function calcTotal() {
             const hwVatRate = parseFloat(document.getElementById('hardwareVatSelect').value) || 0;
             const swVatRate = parseFloat(document.getElementById('softwareVatSelect').value) || 0;
 
-            const subtotal = currentQty * unitPrice;
-            const grandTotal = Math.round(subtotal * (1 + hwVatRate));
+            // 1. Tiền hàng chưa thuế = Số lượng * Đơn giá chưa thuế (Làm tròn chuẩn hàng đơn vị)
+            const subtotal = Math.round(currentQty * unitPrice);
+
+            // 2. Tiền thuế VAT = Tiền hàng * Thuế suất (Làm tròn chuẩn)
+            const vatAmount = Math.round(subtotal * hwVatRate);
+
+            // 3. Tổng cộng thanh toán = Tiền hàng + Tiền thuế VAT (Khớp tuyệt đối)
+            const grandTotal = subtotal + vatAmount;
 
             document.getElementById('tableQty').innerText = currentQty;
             document.getElementById('row1Total').innerText = formatNum(grandTotal);
@@ -1076,7 +1102,9 @@
             // Cập nhật số tiền bằng chữ
             document.getElementById('grandTotalWords').innerText = docSoTien(grandTotal);
 
-            const softTotal = Math.round(softwarePrice * (1 + swVatRate));
+            const softSubtotal = Math.round(softwarePrice);
+            const softVat = Math.round(softSubtotal * swVatRate);
+            const softTotal = softSubtotal + softVat;
             document.getElementById('softTotal').innerText = formatNum(softTotal);
         }
 
@@ -1089,7 +1117,7 @@
         }
 
         function handleQtyChange(el) {
-            let val = cleanNum(el.innerText);
+            let val = Math.round(cleanNum(el.innerText));
             if (val <= 0) val = 1;
             currentQty = val;
             el.innerText = padTwo(currentQty);
