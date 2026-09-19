@@ -259,7 +259,7 @@
 
         .sec-title i { color: var(--primary); }
 
-        /* Tables */
+        /* Tables & Resizable Styling */
         .table-wrap {
             width: 100%;
             overflow-x: auto;
@@ -273,6 +273,7 @@
             border-collapse: collapse;
             font-size: 0.82rem;
             text-align: left;
+            table-layout: fixed;
         }
 
         table.quote-table th {
@@ -284,6 +285,8 @@
             border-right: 1px solid var(--slate-200);
             vertical-align: middle;
             text-align: center !important;
+            position: relative;
+            user-select: none;
         }
 
         table.quote-table td {
@@ -292,6 +295,7 @@
             border-right: 1px solid var(--slate-100);
             vertical-align: middle;
             color: var(--slate-800);
+            word-wrap: break-word;
         }
 
         table.quote-table th:last-child,
@@ -305,6 +309,27 @@
 
         .price-val { font-weight: 600; white-space: nowrap; }
         .total-val { font-weight: 800; color: var(--primary); white-space: nowrap; }
+
+        /* Mép kéo co giãn cột (Resize Handle) */
+        .col-resizer {
+            position: absolute;
+            top: 0;
+            right: -3px;
+            width: 7px;
+            bottom: 0;
+            cursor: col-resize;
+            z-index: 10;
+            display: none;
+        }
+
+        body.admin-mode .col-resizer {
+            display: block;
+        }
+
+        .col-resizer:hover, .col-resizer.resizing {
+            background: #2563eb;
+            opacity: 0.7;
+        }
 
         /* Dropdown thuế suất tùy chọn */
         .vat-select {
@@ -493,7 +518,7 @@
             cursor: text;
         }
 
-        /* Khi mở khóa NVKD: đổi vùng dữ liệu sang màu xanh nước biển */
+        /* Khi mở khóa NVKD */
         body.admin-mode .editable-field {
             background-color: #eff6ff !important;
             border: 1.5px dashed #2563eb !important;
@@ -550,8 +575,8 @@
         /* Print Styling Optimization */
         @media print {
             @page { size: A4 portrait; margin: 6mm 8mm; }
-            body { background: white; padding: 0; font-size: 10.5px; }
-            .app-bar, .admin-alert, .modal-bg, .toggle-attachment-btn { display: none !important; }
+            body { background: white; padding: 0; font-size: 10px; }
+            .app-bar, .admin-alert, .modal-bg, .toggle-attachment-btn, .col-resizer { display: none !important; }
             .page-container { max-width: 100%; margin: 0; padding: 0; }
             .document-paper { border: none; box-shadow: none; padding: 0; }
             .always-editable, .order-qty-val { background: transparent !important; border: none !important; padding: 0 !important; color: inherit !important; }
@@ -608,7 +633,8 @@
             .intro-text { margin-bottom: 6px; font-size: 0.8rem; }
             .sec-title { font-size: 0.85rem; margin: 8px 0 4px 0; padding-bottom: 2px; }
             .table-wrap { margin-bottom: 8px; }
-            table.quote-table th, table.quote-table td { padding: 5px 4px; font-size: 0.78rem; }
+            table.quote-table { table-layout: fixed !important; width: 100% !important; }
+            table.quote-table th, table.quote-table td { padding: 5px 4px; font-size: 0.76rem; }
             table.quote-table th { text-align: center !important; }
             
             .summary-box { padding: 8px 10px; margin: 8px 0; gap: 6px; background: transparent !important; border: 1px solid var(--border); }
@@ -676,8 +702,17 @@
 
             <!-- Alert NVKD khi kích hoạt -->
             <div class="admin-alert" id="adminAlert">
-                <div><strong><i class="fa-solid fa-user-pen"></i> Chế độ NVKD:</strong> Các vùng viền xanh nước biển đã được mở khóa để chỉnh sửa trực tiếp.</div>
-                <button class="btn btn-print" style="padding: 2px 8px; font-size: 0.75rem; background: #fff; color: #1e40af; border: 1px solid #bfdbfe;" onclick="lockAdmin()">Khóa lại</button>
+                <div>
+                    <strong><i class="fa-solid fa-user-pen"></i> Chế độ NVKD:</strong> Có thể sửa trực tiếp & kéo rê mép cột bảng để căn chỉnh độ rộng.
+                </div>
+                <div style="display: flex; gap: 6px;">
+                    <button class="btn btn-print" style="padding: 2px 8px; font-size: 0.75rem; background: #fff; color: #b45309; border: 1px solid #fde68a;" onclick="resetColWidths()">
+                        <i class="fa-solid fa-rotate-left"></i> Đặt lại cột
+                    </button>
+                    <button class="btn btn-print" style="padding: 2px 8px; font-size: 0.75rem; background: #fff; color: #1e40af; border: 1px solid #bfdbfe;" onclick="lockAdmin()">
+                        Khóa lại
+                    </button>
+                </div>
             </div>
 
             <!-- Company Header -->
@@ -728,14 +763,14 @@
                 <i class="fa-solid fa-box-open"></i> THIẾT BỊ KHỞI TẠO BAN ĐẦU
             </div>
             <div class="table-wrap">
-                <table class="quote-table">
+                <table class="quote-table" id="tableHardware">
                     <colgroup>
-                        <col style="width: 7%;">
-                        <col style="width: 43%;">
+                        <col style="width: 6%;">
+                        <col style="width: 36%;">
+                        <col style="width: 8%;">
                         <col style="width: 9%;">
-                        <col style="width: 9%;">
-                        <col style="width: 14%;">
                         <col style="width: 18%;">
+                        <col style="width: 23%;">
                     </colgroup>
                     <thead>
                         <tr>
@@ -743,9 +778,14 @@
                             <th>Tên sản phẩm/ Dịch vụ</th>
                             <th>ĐVT</th>
                             <th>Số lượng</th>
-                            <th>Thuế suất</th>
                             <th>Đơn giá<br>(VNĐ)</th>
-                            <th>Thành tiền ( VNĐ )</th>
+                            <th>Thành tiền ( VNĐ )<br>
+                                <select id="hardwareVatSelect" class="vat-select" style="margin-top: 3px;" onchange="handleVatChange()">
+                                    <option value="0">KCT</option>
+                                    <option value="0.08">VAT 8%</option>
+                                    <option value="0.10" selected>VAT 10%</option>
+                                </select>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -757,13 +797,6 @@
                             </td>
                             <td class="text-center">Bộ</td>
                             <td class="text-center" style="font-weight: 700;" id="tableQty">1</td>
-                            <td class="text-center">
-                                <select id="hardwareVatSelect" class="vat-select" onchange="handleVatChange()">
-                                    <option value="0">KCT</option>
-                                    <option value="0.08">8%</option>
-                                    <option value="0.10" selected>10%</option>
-                                </select>
-                            </td>
                             <td class="text-right price-val">
                                 <span id="hardwarePrice" class="always-editable" contenteditable="true" onblur="handleHardwarePrice(this)">950,000</span>
                             </td>
@@ -796,14 +829,14 @@
                 Căn cứ theo nhu cầu sử dụng Khách hàng cần đóng phí duy trì sử dụng cho từng thiết bị chi tiết như sau:
             </p>
             <div class="table-wrap">
-                <table class="quote-table">
+                <table class="quote-table" id="tableSoftware">
                     <colgroup>
-                        <col style="width: 7%;">
-                        <col style="width: 43%;">
+                        <col style="width: 6%;">
+                        <col style="width: 36%;">
+                        <col style="width: 8%;">
                         <col style="width: 9%;">
-                        <col style="width: 9%;">
-                        <col style="width: 14%;">
                         <col style="width: 18%;">
+                        <col style="width: 23%;">
                     </colgroup>
                     <thead>
                         <tr>
@@ -811,9 +844,14 @@
                             <th>Tên sản phẩm/ Dịch vụ</th>
                             <th>ĐVT</th>
                             <th>Thời hạn</th>
-                            <th>Thuế suất</th>
                             <th>Đơn giá<br>(VNĐ)</th>
-                            <th>Thành tiền ( VNĐ )</th>
+                            <th>Thành tiền ( VNĐ )<br>
+                                <select id="softwareVatSelect" class="vat-select" style="margin-top: 3px;" onchange="handleVatChange()">
+                                    <option value="0">KCT</option>
+                                    <option value="0.08">VAT 8%</option>
+                                    <option value="0.10" selected>VAT 10%</option>
+                                </select>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -822,13 +860,6 @@
                             <td><div class="item-title">Phí dịch vụ phần mềm giám sát hành trình</div></td>
                             <td class="text-center">Gói</td>
                             <td class="text-center">12 tháng</td>
-                            <td class="text-center">
-                                <select id="softwareVatSelect" class="vat-select" onchange="handleVatChange()">
-                                    <option value="0">KCT</option>
-                                    <option value="0.08">8%</option>
-                                    <option value="0.10" selected>10%</option>
-                                </select>
-                            </td>
                             <td class="text-right price-val">
                                 <span id="softwarePrice">880,000</span>
                             </td>
@@ -947,7 +978,7 @@
     <div class="modal-bg" id="passModal">
         <div class="modal-box">
             <h3><i class="fa-solid fa-shield-halved text-primary"></i> Mở khóa NVKD</h3>
-            <p>Nhập mật khẩu để chỉnh sửa ngày tháng và số liên hệ người báo giá.</p>
+            <p>Nhập mật khẩu để chỉnh sửa ngày tháng, số liên hệ và căn chỉnh cột.</p>
             <input type="password" id="passInput" placeholder="Nhập mật khẩu" onkeydown="if(event.key==='Enter') checkPass()">
             <div class="modal-err" id="passErr">Mật khẩu không chính xác!</div>
             <div style="display: flex; gap: 8px;">
@@ -962,23 +993,22 @@
 
     <!-- JAVASCRIPT -->
     <script>
-        let unitPrice = 950000; // Lưu chính xác số thập phân (ví dụ: 818181.82)
+        let unitPrice = 950000;
         let currentQty = 1;
         const softwarePrice = 880000;
 
         let isAdmin = false;
         const PASS_LIST = ["0585114114", "123456", "vpk114"];
 
-        // Format luôn làm tròn về hàng đơn vị khi hiển thị ra giao diện
+        const DEFAULT_WIDTHS = ['6%', '36%', '8%', '9%', '18%', '23%'];
+
         function formatRound(num) {
             return new Intl.NumberFormat('vi-VN').format(Math.round(num));
         }
 
-        // Đọc giá trị người dùng nhập: cho phép nhập tối đa 2 số thập phân
         function cleanNum(str) {
             if (!str) return 0;
             let val = str.toString().trim();
-            // Xử lý chuỗi nếu có dấu chấm phân cách hàng nghìn và phẩy số thập phân (hoặc ngược lại)
             if (val.includes('.') && val.includes(',')) {
                 if (val.lastIndexOf(',') > val.lastIndexOf('.')) {
                     val = val.replace(/\./g, '').replace(',', '.');
@@ -990,7 +1020,6 @@
             }
             val = val.replace(/[^\d.]/g, '');
             let parsed = parseFloat(val) || 0;
-            // Làm tròn tối đa 2 chữ số thập phân khi nhập
             return Math.round(parsed * 100) / 100;
         }
 
@@ -998,7 +1027,6 @@
             return num < 10 ? '0' + num : num;
         }
 
-        /* HÀM ĐỌC TIỀN TIẾNG VIỆT CHUẨN XÁC */
         function docSoTien(so) {
             if (so === 0) return "Không đồng";
             const ChuSo = [" không", " một", " hai", " ba", " bốn", " năm", " sáu", " bảy", " tám", " chín"];
@@ -1080,13 +1108,8 @@
             const hwVatRate = parseFloat(document.getElementById('hardwareVatSelect').value) || 0;
             const swVatRate = parseFloat(document.getElementById('softwareVatSelect').value) || 0;
 
-            // 1. Tiền hàng chưa thuế = currentQty * unitPrice (chứa số lẻ 2 chữ số thập phân), làm tròn hàng đơn vị
             const subtotal = Math.round(currentQty * unitPrice);
-
-            // 2. Thuế VAT = Tiền hàng * % VAT (làm tròn hàng đơn vị)
             const vatAmount = Math.round(subtotal * hwVatRate);
-
-            // 3. Tổng thanh toán = Tiền hàng + Thuế (khớp tròn trĩnh)
             const grandTotal = subtotal + vatAmount;
 
             document.getElementById('tableQty').innerText = currentQty;
@@ -1096,7 +1119,6 @@
             const qtyStr = padTwo(currentQty);
             document.getElementById('grandTotalLabel').innerText = `TỔNG DỰ TOÁN ĐƠN HÀNG (${qtyStr} BỘ THIẾT BỊ GIÁM SÁT XE):`;
 
-            // Bằng chữ
             document.getElementById('grandTotalWords').innerText = docSoTien(grandTotal);
 
             const softSubtotal = Math.round(softwarePrice);
@@ -1108,8 +1130,8 @@
         function handleHardwarePrice(el) {
             let val = cleanNum(el.innerText);
             if (val <= 0) val = 950000;
-            unitPrice = val; // Lưu số thực tế có số lẻ thập phân
-            el.innerText = formatRound(unitPrice); // Hiển thị ra màn hình đã làm tròn hàng đơn vị
+            unitPrice = val;
+            el.innerText = formatRound(unitPrice);
             calcTotal();
         }
 
@@ -1207,8 +1229,92 @@
             }
         }
 
+        /* --- TÍNH NĂNG KÉO RÊ CO GIÃN CỘT BẢNG (COL RESIZING) --- */
+        function applyColWidths(widths) {
+            ['tableHardware', 'tableSoftware'].forEach(tableId => {
+                const table = document.getElementById(tableId);
+                if (!table) return;
+                const cols = table.querySelectorAll('colgroup col');
+                cols.forEach((col, idx) => {
+                    if (widths[idx]) col.style.width = widths[idx];
+                });
+            });
+        }
+
+        function resetColWidths() {
+            applyColWidths(DEFAULT_WIDTHS);
+            localStorage.removeItem('vpk_quote_col_widths');
+        }
+
+        function initColResize() {
+            const savedWidths = localStorage.getItem('vpk_quote_col_widths');
+            if (savedWidths) {
+                try { applyColWidths(JSON.parse(savedWidths)); } catch(e) {}
+            }
+
+            const tables = [document.getElementById('tableHardware'), document.getElementById('tableSoftware')];
+            
+            tables.forEach(table => {
+                if (!table) return;
+                const ths = table.querySelectorAll('thead th');
+                ths.forEach((th, i) => {
+                    // Không tạo resizer ở cột cuối
+                    if (i === ths.length - 1) return;
+
+                    const resizer = document.createElement('div');
+                    resizer.classList.add('col-resizer');
+                    th.appendChild(resizer);
+
+                    let startX = 0;
+                    let thWidth = 0;
+                    let nextThWidth = 0;
+                    let nextTh = th.nextElementSibling;
+
+                    resizer.addEventListener('mousedown', function(e) {
+                        if (!isAdmin) return;
+                        e.preventDefault();
+                        startX = e.pageX;
+                        thWidth = th.offsetWidth;
+                        nextThWidth = nextTh.offsetWidth;
+                        resizer.classList.add('resizing');
+
+                        function onMouseMove(e) {
+                            const diff = e.pageX - startX;
+                            const newThW = Math.max(40, thWidth + diff);
+                            const newNextW = Math.max(40, nextThWidth - diff);
+
+                            const tableWidth = table.offsetWidth;
+                            const thPercent = ((newThW / tableWidth) * 100).toFixed(2) + '%';
+                            const nextThPercent = ((newNextW / tableWidth) * 100).toFixed(2) + '%';
+
+                            const currentWidths = [];
+                            table.querySelectorAll('colgroup col').forEach((c, idx) => {
+                                if (idx === i) currentWidths.push(thPercent);
+                                else if (idx === i + 1) currentWidths.push(nextThPercent);
+                                else currentWidths.push(c.style.width || DEFAULT_WIDTHS[idx]);
+                            });
+
+                            // Đồng bộ độ rộng cho cả 2 bảng
+                            applyColWidths(currentWidths);
+                            localStorage.setItem('vpk_quote_col_widths', JSON.stringify(currentWidths));
+                        }
+
+                        function onMouseUp() {
+                            resizer.classList.remove('resizing');
+                            document.removeEventListener('mousemove', onMouseMove);
+                            document.removeEventListener('mouseup', onMouseUp);
+                        }
+
+                        document.addEventListener('mousemove', onMouseMove);
+                        document.addEventListener('mouseup', onMouseUp);
+                    });
+                });
+            });
+        }
+
         initTodayDate();
         calcTotal();
+        initColResize();
     </script>
 </body>
 </html>
