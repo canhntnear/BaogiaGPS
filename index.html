@@ -962,27 +962,23 @@
 
     <!-- JAVASCRIPT -->
     <script>
-        let unitPrice = 950000;
+        let unitPrice = 950000; // Lưu chính xác số thập phân (ví dụ: 818181.82)
         let currentQty = 1;
         const softwarePrice = 880000;
 
         let isAdmin = false;
         const PASS_LIST = ["0585114114", "123456", "vpk114"];
 
-        // Định dạng số: Giữ nguyên số lẻ (tối đa 3 chữ số thập phân) nếu có, số nguyên thì không hiện ,00
-        function formatNum(num) {
-            const rounded = Math.round(num * 1000) / 1000;
-            return new Intl.NumberFormat('vi-VN', {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 3
-            }).format(rounded);
+        // Format luôn làm tròn về hàng đơn vị khi hiển thị ra giao diện
+        function formatRound(num) {
+            return new Intl.NumberFormat('vi-VN').format(Math.round(num));
         }
 
-        // Đọc giá trị người dùng nhập vào, hỗ trợ cả số thập phân (818.181,818 hoặc 818181.82)
+        // Đọc giá trị người dùng nhập: cho phép nhập tối đa 2 số thập phân
         function cleanNum(str) {
             if (!str) return 0;
             let val = str.toString().trim();
-            // Nếu có cả dấu chấm và phẩy (ví dụ: 818.181,818)
+            // Xử lý chuỗi nếu có dấu chấm phân cách hàng nghìn và phẩy số thập phân (hoặc ngược lại)
             if (val.includes('.') && val.includes(',')) {
                 if (val.lastIndexOf(',') > val.lastIndexOf('.')) {
                     val = val.replace(/\./g, '').replace(',', '.');
@@ -993,7 +989,9 @@
                 val = val.replace(',', '.');
             }
             val = val.replace(/[^\d.]/g, '');
-            return parseFloat(val) || 0;
+            let parsed = parseFloat(val) || 0;
+            // Làm tròn tối đa 2 chữ số thập phân khi nhập
+            return Math.round(parsed * 100) / 100;
         }
 
         function padTwo(num) {
@@ -1078,41 +1076,40 @@
             document.getElementById('docCode').innerText = docCodeStr;
         }
 
-        // TÍNH TOÁN THEO CÁCH 2: Tính tiền hàng chưa VAT làm tròn nguyên trước, sau đó tính VAT
         function calcTotal() {
             const hwVatRate = parseFloat(document.getElementById('hardwareVatSelect').value) || 0;
             const swVatRate = parseFloat(document.getElementById('softwareVatSelect').value) || 0;
 
-            // 1. Tiền hàng chưa thuế = Số lượng * Đơn giá chưa thuế (Làm tròn chuẩn hàng đơn vị)
+            // 1. Tiền hàng chưa thuế = currentQty * unitPrice (chứa số lẻ 2 chữ số thập phân), làm tròn hàng đơn vị
             const subtotal = Math.round(currentQty * unitPrice);
 
-            // 2. Tiền thuế VAT = Tiền hàng * Thuế suất (Làm tròn chuẩn)
+            // 2. Thuế VAT = Tiền hàng * % VAT (làm tròn hàng đơn vị)
             const vatAmount = Math.round(subtotal * hwVatRate);
 
-            // 3. Tổng cộng thanh toán = Tiền hàng + Tiền thuế VAT (Khớp tuyệt đối)
+            // 3. Tổng thanh toán = Tiền hàng + Thuế (khớp tròn trĩnh)
             const grandTotal = subtotal + vatAmount;
 
             document.getElementById('tableQty').innerText = currentQty;
-            document.getElementById('row1Total').innerText = formatNum(grandTotal);
-            document.getElementById('grandTotalText').innerText = formatNum(grandTotal) + ' VNĐ';
+            document.getElementById('row1Total').innerText = formatRound(grandTotal);
+            document.getElementById('grandTotalText').innerText = formatRound(grandTotal) + ' VNĐ';
             
             const qtyStr = padTwo(currentQty);
             document.getElementById('grandTotalLabel').innerText = `TỔNG DỰ TOÁN ĐƠN HÀNG (${qtyStr} BỘ THIẾT BỊ GIÁM SÁT XE):`;
 
-            // Cập nhật số tiền bằng chữ
+            // Bằng chữ
             document.getElementById('grandTotalWords').innerText = docSoTien(grandTotal);
 
             const softSubtotal = Math.round(softwarePrice);
             const softVat = Math.round(softSubtotal * swVatRate);
             const softTotal = softSubtotal + softVat;
-            document.getElementById('softTotal').innerText = formatNum(softTotal);
+            document.getElementById('softTotal').innerText = formatRound(softTotal);
         }
 
         function handleHardwarePrice(el) {
             let val = cleanNum(el.innerText);
             if (val <= 0) val = 950000;
-            unitPrice = val;
-            el.innerText = formatNum(unitPrice);
+            unitPrice = val; // Lưu số thực tế có số lẻ thập phân
+            el.innerText = formatRound(unitPrice); // Hiển thị ra màn hình đã làm tròn hàng đơn vị
             calcTotal();
         }
 
