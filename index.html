@@ -458,7 +458,8 @@
             color: #b91c1c;
             font-weight: 800;
         }
-        .sign-space { height: 45px; }
+        /* Tăng khoảng cách để ký tên và đóng dấu */
+        .sign-space { height: 100px; }
         .sign-author-name { font-size: 0.98rem; font-weight: 700; color: var(--primary-dark); }
         .sign-author-phone { font-size: 0.85rem; font-weight: 700; color: var(--slate-700); }
 
@@ -657,7 +658,8 @@
                 margin-top: 10px;
                 padding-top: 6px;
             }
-            .sign-space { height: 35px; }
+            /* Khoảng cách in vừa vặn con dấu tròn doanh nghiệp */
+            .sign-space { height: 90px; }
 
             .attachment-container {
                 display: block !important;
@@ -1034,7 +1036,6 @@
             return num < 10 ? '0' + num : num;
         }
 
-        /* HÀM LƯU / PHỤC HỒI DỮ LIỆU TỪ LOCALSTORAGE (TRỪ NGÀY & SỐ BÁO GIÁ) */
         function saveParams() {
             const data = {
                 customerName: document.getElementById('customerName').innerText.trim(),
@@ -1158,7 +1159,6 @@
             return chuoi;
         }
 
-        /* Ngày tháng và số văn bản luôn tạo mới theo ngày hiện tại */
         function initTodayDate() {
             const today = new Date();
             const day = padTwo(today.getDate());
@@ -1305,7 +1305,6 @@
             }
         }
 
-        /* --- TÍNH NĂNG CO GIÃN CỘT BẢNG & LƯU VÀO LOCALSTORAGE --- */
         function applyColWidths(widths) {
             ['tableHardware', 'tableSoftware'].forEach(tableId => {
                 const table = document.getElementById(tableId);
@@ -1386,7 +1385,6 @@
             });
         }
 
-        // KHỞI CHẠY HỆ THỐNG
         initTodayDate();
         loadSavedParams();
         calcTotal();
